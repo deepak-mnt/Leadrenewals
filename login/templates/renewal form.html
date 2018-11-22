@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+		<div class="container ">
+			<div class="card">
+				<div class="card-title">
+					<h3 style="margin-top: 50px;">Pending Renewals</h3>
+				</div>
+				<div class="card-body">
+					<form method="POST" action="{% url 'submit_customer_details' %}" autocomplete="off" >
+					{% csrf_token %}	
+						<!-- <div>
+							<p>Your email address (mustaheer.sayyed@rentokil-pci.com) will be recorded when you submit this form. Not you? <a href="https://accounts.google.com/AccountChooser?continue=https://docs.google.com/forms/d/e/1FAIpQLSdDP43MYlRgVDgqQAE6uSFt96dTIpJOy_6CMJNHlAkd7ldxjA/viewform&amp;service=wise" aria-describedby="&quot;wSDd7b&quot;">Switch account</a></p>
+							<p class="text-danger">*Required</p>
+						</div> -->
+					    <div class="form-group">
+					    	<label for="expirydate">Expiry Date</label>
+					    	<input type="text" class="form-control" id="expirydate" placeholder="Expiry Date" name="expirydate" disabled>
+					    </div>
+
+					    <div class="form-group">
+					    	<label for="contractnumber">Contract Numbers</label>
+					    	<select class="form-control" id="contractnumber" name="contractnumber">
+					    		<option>Select Contract Number</option>
+					    		{% for contract_no in contract_number %}
+								<option value={{contract_no}}>{{contract_no}}</option>
+								{% endfor %}
+							</select>
+					    </div>
+
+					    <div id="new" class="form-group">
+					    	<label for="cust">Select Customer </label>
+					    	<select class="form-control" id="cust" name="cust" >
+							</select>
+					    </div>
+
+					    <div class="form-group">
+					    	<label for="csename">CSE Name</label>
+					    	<select class="form-control" id="csename" name="csename">
+							</select>
+					    </div>
+
+					    <div class="form-group">
+					    	<label for="location">Location</label>
+					    	<select class="form-control" id="location" name="location">
+							</select>
+					    </div>
+					    
+					    <div class="form-group">
+					    	<label for="pms">PMS</label>
+					    	<select class="form-control" id="pms" name="pms">
+							</select>
+					    </div>
+					    
+				<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js">
+				</script>
+
+					    <script type="text/javascript">
+					    	// console.log(document.getElementById("contractnumber").value);
+					    	$("#contractnumber").change(function () {
+		                    	var contractnumber = $("#contractnumber").val();
+		                    	console.log("contractnumber",contractnumber);
+		                    	$.ajax({
+		                     		// url: '/ajax/onchange_contractnumber/',
+		                     		url: '{% url "onchange_contractnumber" %}',
+		                    		data: {
+		                    		'contractnumber': contractnumber
+		                    		},
+		                    		dataType: 'json',
+		                    		success: function (data) {
+		                    			// console.log("expiry_date",data.expiry_date);
+		                    			// $("#temp").css("display","none");
+		                    			// $("#new").css("display","block");
+		                    			$("#expirydate").val(data.expiry_date);
+		                    			$("#cust").html(data.cust_name);
+		                    			$("#csename").html(data.cse_name);
+		                    			$("#location").html(data.location);
+		                    			$("#pms").html(data.pms);
+		                    			// console.log("in success part1");	
+		                       		}
+		                    	});
+		                	});
+		                	$("#cust").change(function (){
+		                		console.log($(this).val());
+		                	})
+					    </script>
+
+					    <div class="form-group">
+					    	<label for="renewedamount">Renewed Amount</label>
+					    	<input type="text" class="form-control" id="renewedamount" placeholder="Renewed Amount" name="renewedamount">
+					    </div>
+						<p>A copy of your responses will be emailed to mustaheer.sayyed@rentokil-pci.com.</p>
+						<button type="submit" class="btn btn-primary">Submit</button>
+
+						<!-- <div class="form-group">
+					    	<label for="bname">Branch Name</label>
+					    	<input type="text" class="form-control" id="bname" placeholder="Branch name" name="bname">
+					    </div> -->
+
+					    <!-- <div class="form-group">
+					    	<label for="contractnumber">Contract Number</label>
+					    	<input type="text" class="form-control" id="contractnumber" placeholder="Contract Number" name="contractnumber">
+					    </div> -->
+					    <!-- <div class="form-group">
+					    	<label for="contractorjob">Contract / Job</label>
+					    	<select class="form-control">
+								<option>Contract</option>
+								<option>Job</option>
+							</select>
+					    </div> -->
+					    <!-- <div class="form-group">
+					    	<label for="cname">Customer ID</label>
+					    	<input type="text" class="form-control" id="cname" placeholder="Customer ID" name="cname">
+					    </di -->
+					    <!-- <div class="form-group">
+					    	<label for="customertier">Customer Tier</label>
+					    	<select class="form-control">
+								<option>RES</option>
+								<option>SA</option>
+							</select>
+					    </div -->
+					    <!-- <div class="form-group">
+					    	<label for="cnumber">Contract Number</label>
+					    	<input type="text" class="form-control" id="cnumber" placeholder="Contract Number" name="cnumber">
+					    </div> -->
+					    <!-- <div class="form-group">
+					    	<label for="premisetype">Premise Type</label>
+					    	<input type="text" class="form-control" id="premisetype" placeholder="Premise Type" name="premisetype">
+					    </div>
+					    <div class="form-group">
+					    	<label for="bsegment">Business Segment </label>
+					    	<select class="form-control">
+								<option>CBU</option>
+								<option>RBU</option>
+							</select>
+					    </div> -->
+					    <!-- <div class="form-group">
+					    	<label for="renewdate">Renewed Date</label>
+					    	<select class="form-control">
+								<option>pending</option>
+							</select>
+					    </div>
+					    <div class="form-group">
+					    	<label for="basicvalue">Basic Value</label>
+					    	<input type="text" class="form-control" id="basicvalue" placeholder="Basic Value" name="basicvalue">
+					    </div>
+					    <div class="form-group">
+					    	<label for="tax">Tax</label>
+					    	<input type="text" class="form-control" id="tax" placeholder="Tax" name="tax">
+					    </div> -->
+					</form>
+				</div>
+			</div>		
+		</div>	
+	</body>		
+</html>

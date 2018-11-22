@@ -1,0 +1,10 @@
+<!-- {% if drop_down_type == "cust" %}
+<option value="">select</option> -->
+
+<option value=""></option> 
+{% for custname in data %} 
+<option value="{{ custname.cust_name }}">{{ custname.cust_name }}</option> 
+{% endfor %}
+<script type="text/javascript">
+	console.log("drop_down");
+</script>

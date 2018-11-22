@@ -1,0 +1,332 @@
+{% extends "mains/base.html" %}
+
+<!-- {% load static %} -->
+
+{% block stylesheets %}
+  <!-- <style>#leave_app_form1 { display:none}</style> -->
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+<!-- <!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+	</head> -->
+	<!-- <body> -->
+		<div class="page-wrapper">
+			<div class="card">
+				<div class="card-title">
+					<h3 style="margin-top: 50px;">Pending Renewals</h3>
+				</div>
+				<div class="card-body">
+					<form method="POST" action="{% url 'submit_customer_details' %}" autocomplete="off" onsubmit="tempSubmit()" >
+					{% csrf_token %}
+					    <div class="form-group">
+					    	<label for="expirydate">Expiry Date</label>
+					    	<input type="date" class="form-control" id="expirydate" placeholder="Expiry Date" name="expirydate" value="" disabled>
+					    </div>
+					    <div class="row">
+						    <div class="form-group col-md-6 col-xs-12">
+						    	<label for="csename">CSE Name</label>
+						    	<select class="form-control" id="csename" name="csename">
+						    		<option>Select CSE Name</option>
+						    		{% for cse in cse_name %}
+									<option value="{{ cse }}">{{ cse }}</option>
+									{% endfor %}
+								</select>
+						    </div>
+
+						    <div class="form-group col-md-6 col-xs-12">
+						    	<label for="contractnumber">Contract Numbers</label>
+						    	<select class="form-control" id="contractnumber" name="contractnumber">
+						    		<!-- <option>Select Contract Number</option>
+						    		{% for contract_no in contract_number %}
+									<option value={{contract_no}}>{{contract_no}}</option>
+									{% endfor %} -->
+								</select>
+						    </div>
+						</div>    
+
+						<!-- <div id="new" class="form-group">
+					    	<label for="cust">Select Customer </label>
+					    	<select class="form-control" id="cust" name="cust" >
+							</select>
+					    </div>
+
+
+					    <div class="form-group">
+					    	<label for="location">Location</label>
+					    	<select class="form-control" id="location" name="location">
+							</select>
+					    </div>
+					    
+					    <div class="form-group">
+					    	<label for="pms">PMS</label>
+					    	<select class="form-control" id="pms" name="pms">
+							</select>
+					    </div> -->
+					    <table class="table table-bordered table-responsive-md table-striped text-center" id="data_table" style="display: none;overflow-x: auto;white-space: nowrap;">
+                           <!-- <tr style="background:#8becd6" >
+                           	  <th class="text-center">Customer Name</th>
+                              <th class="text-center">Location</th>
+                              <th class="text-center">PMS</th>
+                              <th class="text-center">Basic Value</th>
+                           </tr> -->
+                           <!-- <div id="">
+                           	
+                           </div> -->
+                           <!-- <tr>
+                              <td><input type="button" class="add btn-rounded btn-primary pull-left"  value="Add Row" id='add_row1' name='add_row1'></td>
+                              <td>
+                                 <select class="form-control col-md-7 col-xs-12" name="product_id" id="product_id">
+                                    <options value="" >None</option>
+                                    {% for prod in prod_list %}
+                                    <option value="{{ prod.id }}">{{ prod.prod_name }}</option>
+                                    {% endfor %}
+                                 </select>
+                              </td>
+                              <td><input type="text" name="prod_code" id="prod_code"></td>
+                              <td><input type="text" name="unit_price" id="unit_price" ></td>
+                              <td><input type="text" name="prod_tax" id="prod_tax"></td>
+                              <td><input type="text" name="quantity" id="quantity"></td>
+                              <td><input type="text" name="total" id="total" readonly></td>
+                           </tr> -->
+                           <!-- This is our clonable table line -->
+                        </table><br>
+                        <div id="remarks_table_div" class="form-group" style="display: none">
+	                        <label for="remarks">Remarks</label>
+	                        <table class="table table-bordered table-responsive-md table-striped text-center" id="remarks_table" style="display: block;overflow-x: auto;white-space: nowrap;">
+	                           <tr style="background:#8becd6" >
+	                           	  <th class="text-center">Action</th>
+	                           	  <th class="text-center">PMS</th>
+	                           	  <th class="text-center">Basic Value</th>
+	                           	  <th class="text-center">Service</th>
+	                              <th class="text-center">Renewed Amount</th>
+	                              <th class="text-center">Contract Period From</th>
+	                              <th class="text-center">Contract Period To</th> 
+	                              <!-- <th class="text-center">PMS</th>
+	                              <th class="text-center">Basic Value</th> -->
+	                           </tr>
+	                           <tr id="newtest">
+	                              <td><input type="button" class="add btn-rounded btn-primary pull-left"  value="Update Contract" id='add_row1' name='add_row1'></td>
+	                              <td>
+	                                 <select class="form-control" name="pms_id" id="pms_id">
+	                                    <!-- <options>Select PMS</option>
+	                                    {% for pms in pms_data %}
+	                                    <option value="{{ pms }}">{{ pms }}</option>
+	                                    {% endfor %} -->
+	                                 </select>
+	                              </td>
+	                              <td>
+	                                 <select class="form-control" name="basic_value" id="basic_value">   
+	                                 </select>
+	                              </td>
+	                              <td><input type="number" class="form-control" name="service" id="service"></td>
+	                              <td><input type="number" class="form-control" name="renewed_amount" id="renewed_amount"></td>
+	                              <td><input type="date" class="form-control" name="contract_period_from" id="contract_period_from"></td>
+	                              <td><input type="date" class="form-control" name="contract_period_to" id="contract_period_to"></td>
+	                           </tr>
+	                        </table>
+	                    </div>     
+                        <!-- ++++++++++++++input table++++++++++++++++++++++++++ -->
+                        <table class="table table-bordered table-responsive-md table-striped text-center" id="input_table" style="display: none;overflow-x: auto;white-space: nowrap;">
+                           <tr style="background:#8becd6" >
+                           	  <th class="text-center">Action</th>
+                           	  <th class="text-center">PMS</th>
+                           	  <th class="text-center">Basic Value</th>
+                           	  <th class="text-center">Service</th>
+                              <!-- <th class="text-center">Renewed Amound</th> -->
+                              <th class="text-center">Contract Period From</th>
+                              <th class="text-center">Contract Period To</th> 
+                              <!-- <th class="text-center">PMS</th>
+                              <th class="text-center">Basic Value</th> -->
+                           </tr>
+                           <tr>
+                              <td><input type="button" class="add btn-rounded btn-primary pull-left"  value="Add Contract" id='add_row2' name='add_row2'></td>
+                              <td>
+                                 <select class="form-control" name="pms_master_id" id="pms_master_id">
+                                 </select>
+                              </td>
+                              <td>
+                              	 <input type="number" class="form-control" name="input_basic_value" id="input_basic_value">
+                              </td>
+                              <td><input type="number" class="form-control" name="input_service" id="input_service"></td>
+                              <!-- <td><input type="number" class="form-control" name="renewed_amount" id="renewed_amount"></td> -->
+                              <td><input type="date" class="form-control" name="input_contract_period_from" id="input_contract_period_from"></td>
+                              <td><input type="date" class="form-control" name="input_contract_period_to" id="input_contract_period_to"></td>
+                           </tr>
+                        </table>
+
+					    <input type="hidden" id="hidden_field" name="hidden_field">
+					    <input type="hidden" id="input_hidden_field" name="input_hidden_field">
+						<!-- <p>A copy of your responses will be emailed to mustaheer.sayyed@rentokil-pci.com.</p> -->
+						<button type="submit" class="btn btn-primary" onclick="submit()">Submit</button>
+						<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+						<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+						<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+						<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js">
+						</script>
+
+					    <script type="text/javascript">
+					    	table_values = [];
+					    	input_table_values = [];
+					    	count = 1;
+
+					    	// console.log("console part");
+					    	$("#csename").change(function () {
+		                    	var csename = $("#csename").val();
+		                    	// console.log("csename",csename);
+		                    	$("#expirydate").val("");
+					    		// console.log("expiry-date",document.getElementById("expirydate").value) ;
+		                    	// console.log("csename1",$(this).val());
+		                    	$.ajax({
+		                     		// url: '/ajax/onchange_contractnumber/',
+		                     		url: '{% url "onchange_cse_name" %}',
+		                    		data: {
+		                    		'csename': csename
+		                    		},
+		                    		dataType: 'json',
+		                    		success: function (data) {
+		                    			
+		                    			$("#contractnumber").html(data.contract_number);
+		                       		}
+		                    	});
+		                	});
+					    	$("#contractnumber").change(function () {
+		                    	var contractnumber = $("#contractnumber").val();
+		                    	var csename = $("#csename").val();
+		                    	console.log("this",$(this).val());
+		                    	// console.log("expirydate",$("expirydate").val());
+		                    	$.ajax({
+		                     		// url: '/ajax/onchange_contractnumber/',
+		                     		url: '{% url "onchange_contractnumber" %}',
+		                    		data: {
+		                    		'contractnumber': contractnumber,
+		                    		'csename': csename
+		                    		},
+		                    		dataType: 'json',
+		                    		success: function (data) {
+
+		                    			$("#expirydate").val(data.expiry_date);
+		                    			// console.log("expiry-date",$("#expirydate").val());
+		                    			$("#data_table").empty();
+		                    			$("#data_table").append(data.table_data);
+		                    			$("#data_table").css("display","block");
+		                    			$("#remarks_table_div").css("display","block");
+		                    			$("#input_table").css("display","block");
+		                    			$("#pms_id").html(data.pms_list);
+		                    			$("#basic_value").html(data.basic_value);
+		                    			$("#pms_master_id").html(data.pms_master_list);
+		                       		}
+		                    	});
+		                	});
+	
+		                	$("#add_row1").click(function () {
+		                		console.log("button clicked");
+		                		var table = document.getElementById("remarks_table");
+		                		var pms_id = $("#pms_id").val();
+		                		var basic_value = $("#basic_value").val();	
+		                		var renewed_amount = $("#renewed_amount").val();
+		                		var service = $("#service").val();
+		                		var contract_period_from = $("#contract_period_from").val();
+		                		var contract_period_to = $("#contract_period_to").val();
+		                		console.log("test all values",pms_id,renewed_amount,contract_period_from,contract_period_to);
+								var table_len = (table.rows.length)-1;
+								table_values.push({"count":count,"pms_id":pms_id,"basic_value":basic_value,"service":service,"renewed_amount":renewed_amount,"contract_period_from":contract_period_from,"contract_period_to":contract_period_to});
+		                		
+		                		console.log("table_values",table_values);
+		                		// console.log("table_values_test",table_values_test);
+		                		table.insertRow(table_len).outerHTML="<tr id='row"+count+"'><td><input type='button' value='Edit' class='delete btn-rounded btn-danger' onclick='edit("+count+")'><input type='button' value='Save' class='delete btn-rounded btn-danger' onclick='save("+count+")'></td><td id='pms_id"+count+"'><input id='test"+count+"' class='form-control' value='"+pms_id+"' disabled></td><td id='basic_value"+count+"'><input class='form-control' value='"+basic_value+"' disabled></td><td id='service"+count+"'>"+service+"</td><td id='renewed_amount"+count+"'>"+renewed_amount+"</td><td id='contract_period_from"+count+"'>"+contract_period_from+"</td><td id='contract_period_to"+count+"'>"+contract_period_to+"</td></tr>";
+								count++;
+								document.getElementById("service").value="";
+								document.getElementById("renewed_amount").value="";
+								document.getElementById("contract_period_from").value="";
+								document.getElementById("contract_period_to").value="";
+		                		
+							});
+
+							$("#add_row2").click(function () {
+		                		console.log("add_row2 button clicked");
+		                		var table = document.getElementById("input_table");
+		                		var pms_master_id = $("#pms_master_id").val();
+		                		var input_basic_value = $("#input_basic_value").val();	
+		                		// var renewed_amount = $("#renewed_amount").val();
+		                		var input_service = $("#input_service").val();
+		                		var input_contract_period_from = $("#input_contract_period_from").val();
+		                		var input_contract_period_to = $("#input_contract_period_to").val();
+		                		// console.log("test all values",pms_id,renewed_amount,contract_period_from,contract_period_to);
+								var table_len = (table.rows.length)-1;
+								input_table_values.push({"pms_master_id":pms_master_id,"input_basic_value":input_basic_value,"input_service":input_service,"input_contract_period_from":input_contract_period_from,"input_contract_period_to":input_contract_period_to});
+		                		
+		                		// console.log("table_values",table_values);
+		                		// console.log("table_values_test",table_values_test);
+		                		table.insertRow(table_len).outerHTML="<tr id='row"+table_len+"'><td></td><td id='pms_master_id"+table_len+"'>"+pms_master_id+"</td><td id='input_basic_value"+table_len+"'>"+input_basic_value+"</td><td id='input_service"+table_len+"'>"+input_service+"</td><td id='input_contract_period_from"+table_len+"'>"+input_contract_period_from+"</td><td id='input_contract_period_to"+table_len+"'>"+input_contract_period_to+"</td></tr>";
+								
+								document.getElementById("input_service").value="";
+								document.getElementById("input_basic_value").value="";
+								document.getElementById("input_contract_period_from").value="";
+								document.getElementById("input_contract_period_to").value="";
+		                		
+							});
+
+							// function delete_row(no)
+			    //               {
+			                   
+			    //                document.getElementById("row"+no+"").outerHTML="";
+			    //                // var a1 = ['a','b','c']
+			    //                $.ajax({
+		     //                 		url: '{% url "delete_row" %}',
+		     //                		data: {
+		     //                			"table_values_test":JSON.stringify(table_values),
+		     //                			"row_no": no
+		     //                		},
+		     //                		dataType: 'json',
+		     //                		success: function (data) {
+
+		     //                   		}
+		     //                	});
+			                   
+			    //               }
+			    			function edit(no) {
+			    				console.log("in edit function=======");
+			    				$("#test"+no).removeAttr("disabled");
+			    				// new_val = $("#"+no).val();
+			    				// console.log("test value",new_val);
+			    			}
+			    			function save(no) {
+			    				$("#test"+no).attr("disabled", true);
+			    				temp = $("#test"+no).val();
+			    				table_values.forEach(function myFunction(item,index) {
+			                     if (item.count == no){
+			                       item.pms_id = temp;
+			                     };	
+                  				}); 
+                  				console.log("table values after save",table_values);
+			    			}
+
+			                function tempSubmit()
+			                  {
+			                  	console.log("method after submit clicked");
+			                  	document.getElementById("hidden_field").value = JSON.stringify(table_values);
+			                  	document.getElementById("input_hidden_field").value = JSON.stringify(table_values);
+			                  }
+					    </script>
+
+					    <!-- <div class="form-group">
+					    	<label for="renewedamount">Renewed Amount</label>
+					    	<input type="text" class="form-control" id="renewedamount" placeholder="Renewed Amount" name="renewedamount">
+					    </div> -->
+					</form>
+				</div>
+			</div>		
+		</div>	
+	<!-- </body>		 -->
+<!-- </html> -->
+{% endblock content %}
